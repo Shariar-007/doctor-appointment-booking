@@ -2,6 +2,8 @@ import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, O
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MdbTableDirective, MdbTablePaginationComponent} from 'angular-bootstrap-md';
+import {AppointmentService} from "../../shared/services/appointment.service";
+import {Doctor} from "../../shared/models/doctor.model";
 
 @Component({
   selector: 'app-doctor-list',
@@ -21,7 +23,9 @@ export class DoctorListComponent implements OnInit, AfterViewInit {
 
   maxVisibleItems = 8;
 
-  constructor(private cdRef: ChangeDetectorRef) {
+  doctors: Doctor[];
+
+  constructor(private cdRef: ChangeDetectorRef, private appointmentService: AppointmentService) {
   }
 
   @HostListener('input') oninput() {
@@ -29,6 +33,7 @@ export class DoctorListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.getDoctors();
     for (let i = 1; i <= 25; i++) {
       this.elements.push({id: i.toString(), first: 'Wpis ' + i, last: 'Last ' + i, handle: 'Handle ' + i});
     }
@@ -44,6 +49,14 @@ export class DoctorListComponent implements OnInit, AfterViewInit {
     this.mdbTablePagination.calculateFirstItemIndex();
     this.mdbTablePagination.calculateLastItemIndex();
     this.cdRef.detectChanges();
+  }
+  // this.doctors = doctors;
+  getDoctors(): void {
+    this.appointmentService.getDoctors()
+      .subscribe(doctors => {
+        this.doctors = doctors;
+        console.log(doctors);
+      });
   }
 
   // addNewRow() {
