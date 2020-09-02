@@ -1,0 +1,68 @@
+<!-- Default form contact -->
+<form class="text-center border border-light p-5 booking-info" [formGroup]="BookingForm" (ngSubmit)="onSubmit()">
+
+  <p class="h4 mb-3">MAKE AN APPOINTMENT</p>
+
+  <div class="row">
+    <div class="col">
+      <div class="md-form md-outline form-sm">
+        <input id="firstName" class="form-control form-control-lg" type="text" formControlName="firstName" mdbInput>
+        <label for="firstName">First name</label>
+      </div>
+    </div>
+    <div class="col">
+      <div class="md-form md-outline form-sm">
+        <input id="form-lg1" class="form-control form-control-lg" type="text" formControlName="lastName" mdbInput>
+        <label for="form-lg1">Last name</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="md-form md-outline form-sm">
+        <input id="E-mail" class="form-control form-control-lg" type="email" formControlName="email" mdbInput>
+        <label for="E-mail">E-mail</label>
+      </div>
+    </div>
+    <div class="col">
+      <div class="md-form md-outline form-sm">
+        <input id="Phone" class="form-control form-control-lg" type="text" formControlName="phone" mdbInput>
+        <label for="Phone">Phone</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col mb-3 mt-4">
+      <select class="browser-default custom-select" (change)="changeGender($event)" formControlName="gender">
+        <option value="" selected disabled>Select Gender</option>
+        <option value="1">Male</option>
+        <option value="2">Female</option>
+      </select>
+    </div>
+    <div class="col">
+      <div class="md-form md-outline form-sm">
+        <input id="time" class="form-control form-control-lg" type="text" mdbInput [value]="appointmentTime" readonly formControlName="appointmentTime">
+        <label for="time">Appointment Time</label>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Message -->
+  <div class="form-group mt-4">
+    <textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="visiting reason" formControlName="detailReason"></textarea>
+  </div>
+
+
+  <!-- Send button -->
+  <div class="row">
+    <div class="col-12 text-center">
+      <button type="button" class="btn btn-primary mr-sm-2" routerLink="{{backUrl}}">Back</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!BookingForm.valid">Send</button>
+    </div>
+  </div>
+
+</form>
+

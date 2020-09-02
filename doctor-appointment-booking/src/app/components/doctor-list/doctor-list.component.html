@@ -1,1 +1,39 @@
-<p>doctor-list works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 mx-auto search-option mb-2">
+      <div class="md-form">
+        <input type="text" class="form-control" [(ngModel)]="searchText" (keyup)="searchItems()" id="search-input"
+               mdbInput>
+        <label for="search-input">Search By Name</label>
+      </div>
+    </div>
+    <table mdbTable #tableEl="mdbTable" stickyHeader="true" hover="true" striped="true" class="z-depth-1">
+      <thead class="sticky-top">
+      <tr>
+        <th *ngFor="let head of headElements; let i = index"
+            scope="col">{{head | titlecase}}
+        </th>
+      </tr>
+      </thead>
+      <tbody #row>
+<!--      class="red-text"-->
+      <tr mdbTableCol *ngFor="let doctor of doctors; let i = index" class="">
+        <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex" scope="row">{{i+1}}</th>
+        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{doctor.name}}</td>
+        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{doctor.org}}</td>
+        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">{{doctor.visitDurationInMin}}</td>
+        <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+          <button mdbBtn color="dark-green" size="sm" mdbWavesEffect (click)="onBookingDoctor(doctor,i)">Book</button>
+        </td>
+      </tr>
+      </tbody>
+      <tfoot class="grey lighten-5 w-100">
+      <tr>
+        <td colspan="6">
+          <mdb-table-pagination [tableEl]="tableEl" paginationAlign="" [searchDataSource]="doctors"></mdb-table-pagination>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
