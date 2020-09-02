@@ -1,9 +1,8 @@
 import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
 import {MdbTableDirective, MdbTablePaginationComponent} from 'angular-bootstrap-md';
-import {AppointmentService} from "../../shared/services/appointment.service";
-import {Doctor} from "../../shared/models/doctor.model";
+import {AppointmentService} from '../../shared/services/appointment.service';
+import {Doctor} from '../../shared/models/doctor.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-doctor-list',
@@ -16,7 +15,7 @@ export class DoctorListComponent implements OnInit, AfterViewInit {
   @ViewChild('row', {static: true}) row: ElementRef;
 
   elements: any = [];
-  headElements = ['id', 'first', 'last', 'handle'];
+  headElements = ['id', 'Name', 'Organization', 'Visiting Time (minutes)', 'Action'];
 
   searchText = '';
   previous: string;
@@ -25,7 +24,10 @@ export class DoctorListComponent implements OnInit, AfterViewInit {
 
   doctors: Doctor[];
 
-  constructor(private cdRef: ChangeDetectorRef, private appointmentService: AppointmentService) {
+  constructor(private cdRef: ChangeDetectorRef,
+              private appointmentService: AppointmentService,
+              private router: Router) {
+    localStorage.removeItem('doctor');
   }
 
   @HostListener('input') oninput() {
@@ -34,13 +36,6 @@ export class DoctorListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.getDoctors();
-    for (let i = 1; i <= 25; i++) {
-      this.elements.push({id: i.toString(), first: 'Wpis ' + i, last: 'Last ' + i, handle: 'Handle ' + i});
-    }
-
-    this.mdbTable.setDataSource(this.elements);
-    this.elements = this.mdbTable.getDataSource();
-    this.previous = this.mdbTable.getDataSource();
   }
 
   ngAfterViewInit() {
@@ -50,68 +45,28 @@ export class DoctorListComponent implements OnInit, AfterViewInit {
     this.mdbTablePagination.calculateLastItemIndex();
     this.cdRef.detectChanges();
   }
-  // this.doctors = doctors;
+
   getDoctors(): void {
     this.appointmentService.getDoctors()
       .subscribe(doctors => {
         this.doctors = doctors;
-        console.log(doctors);
+        // console.log(doctors);
+        this.mdbTable.setDataSource(this.doctors);
+        this.doctors = this.mdbTable.getDataSource();
+        this.previous = this.mdbTable.getDataSource();
       });
   }
-
-  // addNewRow() {
-  //   this.mdbTable.addRow({
-  //     id: this.elements.length.toString(),
-  //     first: 'Wpis ' + this.elements.length,
-  //     last: 'Last ' + this.elements.length,
-  //     handle: 'Handle ' + this.elements.length
-  //   });
-  //   this.emitDataSourceChange();
-  // }
-  //
-  // addNewRowAfter() {
-  //   this.mdbTable.addRowAfter(1, {id: '2', first: 'Nowy', last: 'Row', handle: 'Kopytkowy'});
-  //   this.mdbTable.getDataSource().forEach((el: any, index: any) => {
-  //     el.id = (index + 1).toString();
-  //   });
-  //   this.emitDataSourceChange();
-  // }
-  //
-  // removeLastRow() {
-  //   this.mdbTable.removeLastRow();
-  //   this.emitDataSourceChange();
-  //   this.mdbTable.rowRemoved().subscribe((data: any) => {
-  //     console.log(data);
-  //   });
-  // }
-  //
-  // removeRow() {
-  //   this.mdbTable.removeRow(1);
-  //   this.mdbTable.getDataSource().forEach((el: any, index: any) => {
-  //     el.id = (index + 1).toString();
-  //   });
-  //   this.emitDataSourceChange();
-  //   this.mdbTable.rowRemoved().subscribe((data: any) => {
-  //     console.log(data);
-  //   });
-  // }
-  //
-  // emitDataSourceChange() {
-  //   this.mdbTable.dataSourceChange().subscribe((data: any) => {
-  //     console.log(data);
-  //   });
-  // }
 
   searchItems() {
     const prev = this.mdbTable.getDataSource();
 
     if (!this.searchText) {
       this.mdbTable.setDataSource(this.previous);
-      this.elements = this.mdbTable.getDataSource();
+      this.doctors = this.mdbTable.getDataSource();
     }
 
     if (this.searchText) {
-      this.elements = this.mdbTable.searchLocalDataBy(this.searchText);
+      this.doctors = this.mdbTable.searchLocalDataBy(this.searchText);
       this.mdbTable.setDataSource(prev);
     }
 
@@ -122,5 +77,10 @@ export class DoctorListComponent implements OnInit, AfterViewInit {
       this.mdbTablePagination.calculateFirstItemIndex();
       this.mdbTablePagination.calculateLastItemIndex();
     });
+  }
+
+  onBookingDoctor(doctor: Doctor, i) {
+    localStorage.setItem('doctor', JSON.stringify(doctor));
+    this.router.navigate([`book`, ++i]);
   }
 }

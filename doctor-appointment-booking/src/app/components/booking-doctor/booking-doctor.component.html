@@ -1,0 +1,60 @@
+<div class="container-fluid" id="book">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-12 header pr-0 pl-0">
+          <p>Book Appointment</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 p-0">
+          <ngl-datepicker class="slds-box slds-box_x-small" [(date)]="date" style="width: 100%;"
+                          [dateDisabled]="dateDisabled"></ngl-datepicker>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-8 right">
+      <div class="row">
+        <div class="col-12 header pr-0 pl-0">
+          <span>Show times for</span>
+          <p>{{doctor.name}}</p>
+
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-12 right-main-container mt-2 pl-0 pr-0">
+          <div class="row">
+            <div class="col-sm-6"><p class="pl-3">Selected
+              Date: {{date | date:'longDate'}} {{onAvailableTimeSlotsInDate()}}</p></div>
+            <div class="col-sm-6"><p class="pl-3">Available Time (in
+              minutes): {{doctor?.visitDurationInMin ? doctor?.visitDurationInMin : 'Not Given'}}</p></div>
+          </div>
+
+
+          <div class="container-fluid">
+            <div class="row ml-0" *ngIf="results">
+              <div class="col-6 col-sm-2 mb-2 p-0" *ngFor="let time of results">
+                <button type="button" mdbBtn color="primary" size="sm" mdbWavesEffect style="font-size: 10px;"
+                        (click)="bookTimeSlot(time)">{{time}}</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="results == null">
+            <div class="col">
+              <p style="margin-left: 15px;">No Time Slots Available.</p>
+            </div>
+          </div>
+          <div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
